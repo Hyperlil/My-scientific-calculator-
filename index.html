@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Scientific Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }.calculator {
+  background: #2c2c2c;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 450px;
+}
+
+.display {
+  background: #000;
+  color: #0f0;
+  font-size: 2em;
+  padding: 20px;
+  text-align: right;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+button {
+  padding: 20px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #555;
+}
+
+button.operator {
+  background: #ff9500;
+}
+
+button.equal {
+  background: #4caf50;
+  color: white;
+  grid-column: span 2;
+}
+
+.row-span-2 {
+  grid-row: span 2;
+}
+
+.memory-display {
+  font-size: 0.9em;
+  color: #ccc;
+  text-align: right;
+  margin-bottom: 5px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="memory-display" id="memoryDisplay">Memory: 0</div>
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="appendOperator('%')">%</button>
+      <button class="operator" onclick="appendOperator('/')">÷</button>
+      <button onclick="toggleTheme()">☀/🌙</button><button onclick="appendNumber('7')">7</button>
+  <button onclick="appendNumber('8')">8</button>
+  <button onclick="appendNumber('9')">9</button>
+  <button class="operator" onclick="appendOperator('*')">×</button>
+  <button onclick="squareRoot()">√</button>
+
+  <button onclick="appendNumber('4')">4</button>
+  <button onclick="appendNumber('5')">5</button>
+  <button onclick="appendNumber('6')">6</button>
+  <button class="operator" onclick="appendOperator('-')">−</button>
+  <button onclick="square()">x²</button>
+
+  <button onclick="appendNumber('1')">1</button>
+  <button onclick="appendNumber('2')">2</button>
+  <button onclick="appendNumber('3')">3</button>
+  <button class="operator" onclick="appendOperator('+')">+</button>
+  <button onclick="power()">^</button>
+
+  <button onclick="appendDecimal()">.</button>
+  <button onclick="appendNumber('0')">0</button>
+  <button class="equal" onclick="calculate()">=</button>
+  <button onclick="sin()">sin</button>
+  <button onclick="cos()">cos</button>
+
+  <button onclick="tan()">tan</button>
+  <button onclick="log()">log</button>
+  <button onclick="ln()">ln</button>
+  <button onclick="storeMemory()">M+</button>
+  <button onclick="recallMemory()">MR</button>
+</div>
+
+  </div>  <script>
+    let currentInput = '';
+    let memory = 0;
+    const display = document.getElementById('display');
+    const memoryDisplay = document.getElementById('memoryDisplay');
+
+    function updateDisplay() {
+      display.textContent = currentInput || '0';
+    }
+
+    function appendNumber(number) {
+      currentInput += number;
+      updateDisplay();
+    }
+
+    function appendDecimal() {
+      currentInput += '.';
+      updateDisplay();
+    }
+
+    function appendOperator(op) {
+      if (currentInput !== '' && !isNaN(currentInput.slice(-1))) {
+        currentInput += op;
+        updateDisplay();
+      }
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      updateDisplay();
+    }
+
+    function backspace() {
+      currentInput = currentInput.slice(0, -1);
+      updateDisplay();
+    }
+
+    function squareRoot() {
+      try {
+        currentInput = Math.sqrt(eval(currentInput)).toString();
+        updateDisplay();
+      } catch {
+        currentInput = 'Error';
+        updateDisplay();
+      }
+    }
+
+    function square() {
+      try {
+        currentInput = (Math.pow(eval(currentInput), 2)).toString();
+        updateDisplay();
+      } catch {
+        currentInput = 'Error';
+        updateDisplay();
+      }
+    }
+
+    function power() {
+      currentInput += '**';
+      updateDisplay();
+    }
+
+    function calculate() {
+      try {
+        currentInput = Function(`'use strict'; return (${currentInput})`)().toString();
+        updateDisplay();
+      } catch {
+        currentInput = 'Error';
+        updateDisplay();
+      }
+    }
+
+    function sin() {
+      currentInput = Math.sin(eval(currentInput) * Math.PI / 180).toString();
+      updateDisplay();
+    }
+
+    function cos() {
+      currentInput = Math.cos(eval(currentInput) * Math.PI / 180).toString();
+      updateDisplay();
+    }
+
+    function tan() {
+      currentInput = Math.tan(eval(currentInput) * Math.PI / 180).toString();
+      updateDisplay();
+    }
+
+    function log() {
+      currentInput = Math.log10(eval(currentInput)).toString();
+      updateDisplay();
+    }
+
+    function ln() {
+      currentInput = Math.log(eval(currentInput)).toString();
+      updateDisplay();
+    }
+
+    function storeMemory() {
+      memory = parseFloat(currentInput) || 0;
+      memoryDisplay.textContent = 'Memory: ' + memory;
+    }
+
+    function recallMemory() {
+      currentInput += memory;
+      updateDisplay();
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.style.background === 'white';
+      document.body.style.background = isDark ? '#1e1e1e' : 'white';
+      document.body.style.color = isDark ? '#fff' : '#000';
+    }
+  </script></body>
+</html>
